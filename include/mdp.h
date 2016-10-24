@@ -2,7 +2,13 @@
 #define _MDP_H_
 
 //Majordomo protocol
-namspace mdp{
+namspace mdp {
+
+#ifndef NDEBUG
+#   define ZMQ_ASSERT(expression) assert(expression)
+#else
+#   define ZMQ_ASSERT(expression) (void)(expression)
+#endif
 
 #define MDPC_CLIENT         "MDPC0X"
 
@@ -28,6 +34,16 @@ static char *mdpc_commands [] = {
 static char *mdpw_commands [] = {
     NULL, "READY", "REQUEST", "REPORT", "HEARTBEAT", "DISCONNECT"
 };
+
+inline const char* err_msg()
+{
+    return zmq_strerror(zmq_errno());
+}
+
+inline const int err_code()
+{
+    return zmq_errno();
+}
 
 }
 
