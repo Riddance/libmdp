@@ -1,23 +1,26 @@
 #ifndef _MDP_WORKER_H_
 #define _MDP_WORKER_H_
 
+#include "mdp_define.h"
+
 namspace mdp {
 
-class WorkerApi
+class WrkApi
 {
 public:
-    WorkerApi();
-    virtual ~WorkerApi();
+    WrkApi();
+    virtual ~WrkApi();
+    int Init(const std::string& broker, const std::string& service);
+    int RecvMsg(std::string& msg, std::string& from);
+    int SendMsg(std::string& msg, std::string& to);
+    int SetSockOpt(int option, const void *optval, size_t optvallen);
+    int GetSockOpt(int option, void *optval, size_t *optvallen);
 
-    bool Init(const std::string& broker, const std::string& service);
-    bool Recv(std::string& msg, std::string& from);
-    bool Send(std::string& msg, std::string& to);
-    
 private:
-    bool SendToBroker(const std::string& command, std::string& option, std::string& msg);
-    bool ConnectToBroker();
+    int  RealSend(const std::string& cmd, std::string& option, std::string& msg);
+    int  Connect();
     void Close();
-    bool PushMsg(std::list<zmq::zmq_msg_t>& msg_list);
+    int  ProcessCmd();
 
 private:
     void*           m_ctx;

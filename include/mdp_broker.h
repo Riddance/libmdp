@@ -3,17 +3,18 @@
 
 namspace mdp {
 
-class BrokerApi
+class BrkApi
 {
 public:
-    BrokerApi();
-    virtual BrokerApi();
+    BrkApi();
+    virtual BrkApi();
+
+    int init();
 
 private:
-    //bool ConnectToBroker();
-
-private:
-
+    void*           m_ctx;
+    void*           m_socket;
+    std::string     m_broker;
 };
 
 }
