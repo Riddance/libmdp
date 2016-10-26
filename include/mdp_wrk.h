@@ -1,5 +1,5 @@
-#ifndef _MDP_WORKER_H_
-#define _MDP_WORKER_H_
+#ifndef _MDP_WRK_H_
+#define _MDP_WRK_H_
 
 #include "mdp_define.h"
 
@@ -10,17 +10,19 @@ class WrkApi
 public:
     WrkApi();
     virtual ~WrkApi();
+
     int Init(const std::string& broker, const std::string& service);
-    int RecvMsg(std::string& msg, std::string& from);
-    int SendMsg(std::string& msg, std::string& to);
+    int RecvMessage(std::string& msg, std::string& from);
+    int SendMessage(std::string& msg, std::string& to);
     int SetSockOpt(int option, const void *optval, size_t optvallen);
     int GetSockOpt(int option, void *optval, size_t *optvallen);
 
 private:
-    int  RealSend(const std::string& cmd, std::string& option, std::string& msg);
     int  Connect();
     void Close();
-    int  ProcessCmd();
+    int  ProcessRecvCmd (mdp::MdpMessage& mdp_message, std::string& message, std::string& from);
+    int  RealSend(const std::string& cmd, const std::string& opt, mdp::MdpMessage& mdp_message);
+    void DoHeartbeat();
 
 private:
     void*           m_ctx;
@@ -29,9 +31,9 @@ private:
     std::string     m_service;
     int             m_heartbeat; //  Heartbeat delay, msecs
     int             m_reconnect; //  Reconnect delay, msecs
-    size_t          m_liveness;
+    int             m_heartbeat_at;
 };
 
 }
 
-#endif//_MDP_WORKER_H_
+#endif//_MDP_WRK_H_

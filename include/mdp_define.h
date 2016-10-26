@@ -5,9 +5,9 @@
 
 //Majordomo protocol
 #ifndef NDEBUG
-#   define ZMQ_ASSERT(expression) assert(expression)
+#   define MDP_ASSERT(expression) assert(expression)
 #else
-#   define ZMQ_ASSERT(expression) (void)(expression)
+#   define MDP_ASSERT(expression) (void)(expression)
 #endif
 
 #define MDPC_CLIENT         "MDPC0X"
