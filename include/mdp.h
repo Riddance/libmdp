@@ -2,9 +2,9 @@
 #define _MDP_H_
 
 #include "zmq.h"
-#include "mdpcli.h"
-#include "mdpbrk.h"
-#include "mdpwrk.h"
+#include "mdp_cli.h"
+#include "mdp_brk.h"
+#include "mdp_wrk.h"
 
 namspace mdp {
 
