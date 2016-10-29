@@ -21,7 +21,7 @@ int WrkApi::Init(const std::string& broker, const std::string& service)
     m_broker    = broker;
     m_service   = service;
 
-    m_ctx = zmq_ctx_new();
+    m_ctx = zmq_ctx_new ();
     if (m_ctx == NULL)
         return -1;
 
@@ -54,7 +54,7 @@ int WrkApi::RecvMessage(std::string& message, std::string& addr)
                 return rc;
         }
 
-        DoHeartbeat();
+        DoHeartbeat ();
         if (!message.empty() && !addr.empty())
             break;
     }
@@ -165,6 +165,7 @@ void WrkApi::DoHeartbeat()
     {
         mdp::MdpMessage mdp_message;
         RealSend(MDPW_HEARTBEAT, "", mdp_message);
+        m_heartbeat_at = mdp::mdp_time() + m_heartbeat;
     }
     
     return;
