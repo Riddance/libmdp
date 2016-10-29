@@ -10,7 +10,7 @@ public:
     virtual ~BrkApi(){}
 
     int  Init(const std::string& endpoint);
-    void StartBrokering();
+    void Start();
     void Stop();
 
 
