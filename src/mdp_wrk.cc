@@ -34,30 +34,25 @@ int WrkApi::RecvMessage(std::string& message, std::string& addr)
     MDP_ASSERT (message.empty());
     MDP_ASSERT (addr.empty());
 
-    while (true)
+    zmq_pollitem_t items [] = {m_socket, 0, ZMQ_POLLIN, 0};
+    rc = zmq_poll (items, 1,
+                  m_heartbeat * ZMQ_POLL_MSEC);
+    if (rc == -1)
+        return rc;
+
+    if (items[0].revents & ZMQ_POLLIN)
     {
-        zmq_pollitem_t items [] = {m_socket, 0, ZMQ_POLLIN, 0};
-        rc = zmq_poll (items, 1, 
-                      m_heartbeat * ZMQ_POLL_MSEC);
-        if (rc == -1)
+        mdp::MdpMsg mdp_message;
+        rc = mdp_message.Recv (m_socket);
+        if (rc != 0)
             return rc;
 
-        if (items[0].revents & ZMQ_POLLIN)
-        {
-            mdp::MdpMessage mdp_message;
-            rc = mdp_message.Recv (m_socket);
-            if (rc != 0)
-                return rc;
-
-            rc = ProcessRecvCmd (mdp_message, message, addr);
-            if (rc != 0)
-                return rc;
-        }
-
-        DoHeartbeat ();
-        if (!message.empty() && !addr.empty())
-            break;
+        rc = ProcessRecvCmd (mdp_message, message, addr);
+        if (rc != 0)
+            return rc;
     }
+
+    DoHeartbeat ();
 
     return 0;
 }
@@ -66,7 +61,7 @@ int WrkApi::SendMessage (std::string& msg, std::string& to)
 {
     MDP_ASSERT (!to.empty());
 
-    mdp::MdpMessage mdp_message;
+    mdp::MdpMsg mdp_message;
     mdp_message.PushFront("");
     mdp_message.PushFront(to);
 
@@ -100,18 +95,16 @@ int WrkApi::Connect ()
     if (rc != 0)
         return rc;
 
-    //m_liveness = HEARTBEAT_LIVENESS;
     m_heartbeat = mdp::mdp_time() + m_heartbeat;
 
-    mdp::MdpMessage mdp_message;
+    mdp::MdpMsg mdp_message;
     mdp_message.PushFront ();
-
     return RealSend ((char*)MDPW_READY, m_service, mdp_message);
 }
 
 void WrkApi::Close ()
 {
-    mdp::MdpMessage mdp_message;
+    mdp::MdpMsg mdp_message;
     int rc = RealSend (MDPW_DISCONNECT, "", mdp_message);
     MDP_ASSERT (rc == 0);
 
@@ -132,15 +125,15 @@ void WrkApi::Close ()
     return;
 }
 
-int WrkApi::ProcessRecvCmd (mdp::MdpMessage& mdp_message, std::string& message, std::string& from)
+int WrkApi::ProcessRecvCmd (mdp::MdpMsg& mdp_message, std::string& message, std::string& from)
 {
     int rc = 0;
     MDP_ASSERT (mdp_message.size() >= 3);
     std::string empty   = mdp_message.PopFront ();
     std::string header  = mdp_message.PopFront ();
     MDP_ASSERT (header == std::string(MDPW_WORKER));
-
     std::string cmd = mdp_message.PopFront ();
+
     if (cmd == std::string (MDPW_HEARTBEAT)) {;}
     else if (cmd == std::string (MDPW_REQUEST))
     {
@@ -163,16 +156,16 @@ void WrkApi::DoHeartbeat()
 {
     if (mdp::mdp_time() > m_heartbeat_at)
     {
-        mdp::MdpMessage mdp_message;
+        mdp::MdpMsg mdp_message;
         RealSend(MDPW_HEARTBEAT, "", mdp_message);
         m_heartbeat_at = mdp::mdp_time() + m_heartbeat;
     }
-    
+
     return;
 }
 
 
-int WrkApi::RealSend (const std::string& cmd, const std::string& opt, mdp::MdpMessage& mdp_message)
+int WrkApi::RealSend (const std::string& cmd, const std::string& opt, mdp::MdpMsg& mdp_message)
 {
     if (!opt.empty())
         mdp_message.PushFront(opt);
@@ -186,4 +179,3 @@ int WrkApi::RealSend (const std::string& cmd, const std::string& opt, mdp::MdpMe
 
 
 } // mdp
-

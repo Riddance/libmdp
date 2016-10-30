@@ -7,11 +7,11 @@
 
 namespace mdp {
 
-class MdpMessage
+class MdpMsg
 {
 public:
-    MdpMessage(){}
-    virtual ~MdpMessage()
+    MdpMsg(){}
+    virtual ~MdpMsg()
     {
         Clear();
     }
@@ -25,7 +25,7 @@ public:
         if (data.empty())
             rc = zmq_msg_init(&part);
         else
-            rc = zmq_msg_init_data(&part, data.c_str(), 
+            rc = zmq_msg_init_data(&part, data.c_str(),
                                    data.size(), 0, 0);
         ZMQ_ASSERT(rc == 0);
 
@@ -40,10 +40,10 @@ public:
         if (data.empty())
             rc = zmq_msg_init(&part);
         else
-            rc = zmq_msg_init_data(&part, data.c_str(), 
+            rc = zmq_msg_init_data(&part, data.c_str(),
                                    data.size(), 0, 0);
         ZMQ_ASSERT(rc == 0);
-        
+
         return;
     }
 
@@ -71,7 +71,7 @@ public:
         while(m_parts.size() != 0)
         {
             zmq_msg_t& part = m_parts[0];
-            rc = zmq_msg_send (&part, socket, 
+            rc = zmq_msg_send (&part, socket,
                               (i++ < parts_size - 1) ? ZMQ_SNDMORE : 0);
             if (rc < 0)
                 break;

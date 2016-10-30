@@ -20,8 +20,8 @@ public:
 private:
     int  Connect();
     void Close();
-    int  ProcessRecvCmd (mdp::MdpMessage& mdp_message, std::string& message, std::string& from);
-    int  RealSend(const std::string& cmd, const std::string& opt, mdp::MdpMessage& mdp_message);
+    int  ProcessRecvCmd (mdp::MdpMsg& mdp_message, std::string& message, std::string& from);
+    int  RealSend(const std::string& cmd, const std::string& opt, mdp::MdpMsg& mdp_message);
     void DoHeartbeat();
 
 private:
