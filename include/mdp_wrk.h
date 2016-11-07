@@ -30,7 +30,7 @@ private:
     std::string     m_broker;
     std::string     m_service;
     int             m_heartbeat; //  Heartbeat delay, msecs
-    int             m_reconnect; //  Reconnect delay, msecs
+    //int             m_reconnect; //  Reconnect delay, msecs
     int             m_heartbeat_at;
 };
 

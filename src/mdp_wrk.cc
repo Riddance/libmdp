@@ -5,10 +5,10 @@ namespace mdp {
 
 WrkApi::WrkApi()
 {
-    m_ctx       = NULL;
-    m_socket    = NULL;
-    m_heartbeat = 2500;
-    m_reconnect = 2500;//  msecs
+    m_ctx           = NULL;
+    m_socket        = NULL;
+    m_heartbeat     = 2500;
+    m_heartbeat_at  = 0;
 }
 
 WrkApi::~WrkApi()
@@ -35,8 +35,7 @@ int WrkApi::RecvMessage(std::string& message, std::string& addr)
     MDP_ASSERT (addr.empty());
 
     zmq_pollitem_t items [] = {m_socket, 0, ZMQ_POLLIN, 0};
-    rc = zmq_poll (items, 1,
-                  m_heartbeat * ZMQ_POLL_MSEC);
+    rc = zmq_poll (items, 1, 0);
     if (rc == -1)
         return rc;
 

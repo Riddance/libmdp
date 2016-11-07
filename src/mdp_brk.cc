@@ -2,6 +2,18 @@
 
 namespace mdp {
 
+struct MdpWrk_
+{
+    std::string name;                 //  Service name
+    std::string m_addr;                //  Address of worker
+};
+
+struct Service_
+{
+    std::string name;
+    
+};
+
 BrkApi::BrkApi()
 {
     m_quit      = false;
@@ -40,19 +52,18 @@ int BrkApi::Bind()
     return 0;
 }
 
-void BrkApi::StartBrokering()
+void BrkApi::Start()
 {
     while (!m_quit)
     {
-        int now = mdp::mdp_time ();
-        
+        int now = mdp::mdp_time (); 
         zmq_pollitem_t items [] = {m_socket, 0, ZMQ_POLLIN, 0};
         int time_out = heartbeat_at - now;
         rc = zmq_poll (items, 1, 
                       m_heartbeat * ZMQ_POLL_MSEC);
 
         if (items [0].revents & ZMQ_POLLIN) {
-            mdp::MdpMessage mdp_message;
+            mdp::MdpMsg mdp_message;
             rc = mdp_message.Recv (m_socket);
             if (rc != 0)
                 return rc;
@@ -70,22 +81,12 @@ void BrkApi::StartBrokering()
                 ProcessWorkerMessage (mdp_message, sender);
             }
         }
-
-        now = mdp::mdp_time ();
-        if (now >= heartbeat_at) {
-            DoHeartbeat ();
-        }
     }
 }
 
 void BrkApi::Stop()
 {
     m_quit = true;
-}
-
-void BrkApi::DoHeartbeat()
-{
-
 }
 
 void BrkApi::ProcessClientMessage(mdp::MdpMessage& mdp_message, std::string& sender)

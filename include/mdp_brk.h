@@ -19,7 +19,6 @@ private:
     int   Close();
     void  ProcessClientMessage(mdp::MdpMessage& mdp_message, std::string& sender);
     void  ProcessWorkerMessage(mdp::MdpMessage& mdp_message, std::string& sender);
-    void  DoHeartbeat();
 
 private:
     void*           m_ctx;

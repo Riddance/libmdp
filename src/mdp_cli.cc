@@ -31,7 +31,7 @@ int SyncCliApi::Request (const std::string& service, std::string& req, std::stri
     if (rc != 0)
         return rc;
 
-    mdp::MdpMessage req_message;
+    mdp::MdpMsg req_message;
     req_message.PushFront (req);
     req_message.PushFront (service);
     req_message.PushFront (MDPC_CLIENT);
@@ -46,7 +46,7 @@ int SyncCliApi::Request (const std::string& service, std::string& req, std::stri
 
     if (items[0].revents & ZMQ_POLLIN)
     {
-        mdp::MdpMessage rep_message;
+        mdp::MdpMsg rep_message;
         rc = rep_message.Recv (m_socket);
         if (rc != 0)
             return rc;
@@ -133,7 +133,7 @@ void AsyncCliApi::SetTimeOut(int timeout)
 
 int AsyncCliApi::Send(const std::string& service, std::string& message)
 {
-    mdp::MdpMessage req_message;
+    mdp::MdpMsg req_message;
 
     req_message.PushFront (message);
     req_message.PushFront (service);
@@ -156,7 +156,7 @@ int AsyncCliApi::Recv(std::string& service, std::string& message)
 
     if (items[0].revents & ZMQ_POLLIN)
     {
-        mdp::MdpMessage rep_message;
+        mdp::MdpMsg rep_message;
         rc = rep_message.Recv (m_socket);
         if (rc != 0)
             return rc;
