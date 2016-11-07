@@ -3,13 +3,11 @@
 set -x
 set -e
 
-git clone --depth 1 -b stable git@github.com:zeromq/libzmq.git
+git clone https://github.com/zeromq/libzmq
 (
-    cd libzmq
-    ./autogen.sh
-    ./configure
-    sudo make install
-    sudo ldconfig
+    mkdir cmake-build && cd cmake-build
+    cmake .. && make -j 4
+    make test && make install && sudo ldconfig
 )
 
 mkdir build
