@@ -12,4 +12,5 @@ addons:
 script: ./ci_build.sh
 
 notifications:
-  email: false
+  email:
+    -- rangercyh@qq.com

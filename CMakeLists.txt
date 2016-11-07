@@ -1,12 +1,13 @@
 PROJECT(libmdp)
 cmake_minimum_required(VERSION 2.8)
 
-# Add common source
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
+include_directories(
+    ./include
+    ./libzmq/include
+)
+aux_source_directory(./src SRC_LIST)
+link_directories(
+    ./libzmq/lib
+)
 
-
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
-
-
-add_library(libmdp SHARED tinyxml2.cpp tinyxml2.h)
-set_target_properties()
+add_library(libmdp SHARED ${SRC_LIST})
