@@ -2,6 +2,7 @@
 #define MDP_MSG_H
 
 #include <list>
+#include <string>
 #include "mdp_define.h"
 
 namespace mdp {

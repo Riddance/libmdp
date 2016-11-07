@@ -1,6 +1,8 @@
 #ifndef MDP_BRK_H
 #define MDP_BRK_H
 
+#include <string>
+
 namespace mdp {
 
 struct WorkerInfo

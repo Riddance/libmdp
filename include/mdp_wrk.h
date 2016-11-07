@@ -2,6 +2,7 @@
 #define _MDP_WRK_H_
 
 #include "mdp_define.h"
+#include <string>
 
 namspace mdp {
 

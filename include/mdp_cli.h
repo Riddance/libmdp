@@ -1,6 +1,8 @@
 #ifndef _MDP_CLI_H_
 #define _MDP_CLI_H_
 
+#include <string>
+
 namspace mdp {
 
 class SyncCliApi
