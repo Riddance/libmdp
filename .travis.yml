@@ -15,4 +15,4 @@ script: ./ci_build.sh
 
 notifications:
   email:
-    -- rangercyh@qq.com
+    - rangercyh@qq.com
