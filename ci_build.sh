@@ -3,7 +3,7 @@
 set -x
 set -e
 
-git clone --depth 1 -b stable git@github.com:zeromq/libzmq.git;
+git clone --depth 1 -b stable git@github.com:zeromq/libzmq.git
 (
     cd libzmq
     ./autogen.sh
@@ -12,7 +12,7 @@ git clone --depth 1 -b stable git@github.com:zeromq/libzmq.git;
     sudo ldconfig
 )
 
-mkdir build;
-cd build;
+mkdir build
+cd build
 cmake ../
 make

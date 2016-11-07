@@ -2,6 +2,8 @@ language: cpp
 
 os: linux
 
+dist: trusty
+
 sudo: required
 
 addons:
@@ -9,7 +11,8 @@ addons:
     package:
     - cmake
 
-script: ./ci_build.sh
+script:
+  - sudo ./ci_build.sh
 
 notifications:
   email:
