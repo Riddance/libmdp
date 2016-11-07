@@ -1,7 +1,7 @@
 #ifndef MDP_MSG_H
 #define MDP_MSG_H
 
-#include <list>
+#include <vector>
 #include <string>
 #include "mdp_define.h"
 
