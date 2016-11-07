@@ -1,7 +1,7 @@
 #include "mdp_cli.h"
+#include "mdp_define.h"
 
 namespace mdp {
-
 
 SyncCliApi::SyncCliApi ()
 {
@@ -23,6 +23,18 @@ int SyncCliApi::Init (const std::string& broker)
         return -1;
 
     return 0;
+}
+
+int SyncCliApi::SetSockOpt (int option, const void *optval, size_t optvallen)
+{
+    MDP_ASSERT (m_socket);
+    return zmq_setsockopt (m_socket, option, optval, optvallen);
+}
+
+int SyncCliApi::GetSockOpt (int option, void *optval, size_t *optvallen)
+{
+    MDP_ASSERT (m_socket);
+    return zmq_getsockopt (m_socket, option, optval, optvallen);
 }
 
 int SyncCliApi::Request (const std::string& service, std::string& req, std::string& rep)
@@ -57,15 +69,15 @@ int SyncCliApi::Request (const std::string& service, std::string& req, std::stri
         rep = rep_message.PopFront ();
     }
 
-    return 0;
+    return (int) rep.size();
 }
 
-void SyncCliApi::SetTimeOut(int timeout)
+void SyncCliApi::SetTimeOut (int timeout)
 {
     m_timeout = timeout;
 }
 
-int SyncCliApi::Connect()
+int SyncCliApi::Connect ()
 {
     int rc = 0;
     if (m_socket != NULL)
@@ -84,7 +96,7 @@ int SyncCliApi::Connect()
     return zmq_connect (m_socket, m_broker.c_str());
 }
 
-void SyncCliApi::Close()
+void SyncCliApi::Close ()
 {
     if (m_socket != 0)
     {
@@ -104,19 +116,19 @@ void SyncCliApi::Close()
 }
 
 
-AsyncCliApi::AsyncCliApi()
+AsyncCliApi::AsyncCliApi ()
 {
     m_ctx       = NULL;
     m_socket    = NULL;
     m_timeout   = 0;
 }
 
-AsyncCliApi::~AsyncCliApi()
+AsyncCliApi::~AsyncCliApi ()
 {
     Close();
 }
 
-int AsyncCliApi::Init(const std::string& broker)
+int AsyncCliApi::Init (const std::string& broker)
 {
     m_broker = broker;
     m_ctx = zmq_ctx_new();
@@ -126,12 +138,24 @@ int AsyncCliApi::Init(const std::string& broker)
     return 0;
 }
 
-void AsyncCliApi::SetTimeOut(int timeout)
+int AsyncCliApi::SetSockOpt (int option, const void *optval, size_t optvallen)
+{
+    MDP_ASSERT (m_socket);
+    return zmq_setsockopt (m_socket, option, optval, optvallen);
+}
+
+int AsyncCliApi::GetSockOpt (int option, void *optval, size_t *optvallen)
+{
+    MDP_ASSERT (m_socket);
+    return zmq_getsockopt (m_socket, option, optval, optvallen);
+}
+
+void AsyncCliApi::SetTimeOut (int timeout)
 {
     m_timeout = timeout;
 }
 
-int AsyncCliApi::Send(const std::string& service, std::string& message)
+int AsyncCliApi::Send (const std::string& service, std::string& message)
 {
     mdp::MdpMsg req_message;
 
@@ -147,8 +171,11 @@ int AsyncCliApi::Send(const std::string& service, std::string& message)
     return 0;
 }
 
-int AsyncCliApi::Recv(std::string& service, std::string& message)
+//return recv data size
+int AsyncCliApi::Recv (std::string& service, std::string& message)
 {
+    MDP_ASSERT (service.empty());
+    MDP_ASSERT ();
     zmq_pollitem_t items [] = {m_socket, 0, ZMQ_POLLIN, 0};
     int rc = zmq_poll (items, 1, m_timeout);
     if (rc == -1)
@@ -169,10 +196,10 @@ int AsyncCliApi::Recv(std::string& service, std::string& message)
         message = rep_message.PopFront ();
     }
 
-    return 0;
+    return (int) message.size ();
 }
 
-int AsyncCliApi::Connect()
+int AsyncCliApi::Connect ()
 {
     int rc = 0;
     if (m_socket != NULL)
@@ -191,7 +218,7 @@ int AsyncCliApi::Connect()
     return zmq_connect (m_socket, m_broker.c_str());
 }
 
-void AsyncCliApi::Close()
+void AsyncCliApi::Close ()
 {
     if (m_socket != 0)
     {
@@ -209,7 +236,5 @@ void AsyncCliApi::Close()
 
     return;
 }
-
-
 
 } // mdp

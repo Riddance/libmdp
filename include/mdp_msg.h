@@ -2,7 +2,6 @@
 #define MDP_MSG_H
 
 #include <list>
-#include <zmq.h>
 #include "mdp_define.h"
 
 namespace mdp {
@@ -67,19 +66,18 @@ public:
 
         int rc = 0;
         int i  = 0;
-
-        while(m_parts.size() != 0)
+        int part_size = (int)m_parts.size();
+        for (; i < part_size; ++i)
         {
-            zmq_msg_t& part = m_parts[0];
-            rc = zmq_msg_send (&part, socket,
-                              (i++ < parts_size - 1) ? ZMQ_SNDMORE : 0);
+            rc = zmq_msg_send (&m_parts[i], socket, (i < part_size - 1) ? ZMQ_SNDMORE : 0);
             if (rc < 0)
                 break;
-            zmq_msg_close (&part);
-            m_parts.erase (0);
-        }
 
-        return 0;
+            zmq_msg_close (&m_parts[i]);
+        }
+        m_parts.erase(m_parts.begin(), m_parts.begin() + i);
+
+        return rc;
     }
 
     int Recv (void* socket)

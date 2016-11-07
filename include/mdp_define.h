@@ -2,6 +2,7 @@
 #define MDP_DEFINE_H
 
 #include "zmq.h"
+#include "mdp_msg.h"
 
 //Majordomo protocol
 #ifndef NDEBUG
@@ -34,5 +35,10 @@ static char *mdpc_commands [] = {
 static char *mdpw_commands [] = {
     NULL, "READY", "REQUEST", "REPORT", "HEARTBEAT", "DISCONNECT"
 };
+
+#define HEARTBEAT_LIVENESS  5
+#define HEARTBEAT_INTERVAL  2500
+#define HEARTBEAT_EXPIRY    HEARTBEAT_INTERVAL * HEARTBEAT_LIVENESS
+
 
 #endif // MDP_DEFINE_H

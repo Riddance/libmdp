@@ -6,10 +6,13 @@ namspace mdp {
 class SyncCliApi
 {
 public:
-    SyncCliApi();
-    virtual ~SyncCliApi();
+    SyncCliApi ();
+    virtual ~SyncCliApi ();
+
     int     Init (std::string& broker);
-    int     Request (const std::string& service, std::string& req, std::string& rep);
+    int     SetSockOpt (int option, const void *optval, size_t optvallen);
+    int     GetSockOpt (int option, void *optval, size_t *optvallen);
+    int     Request (const std::string& service, std::string& route_data, std::string& req, std::string& rep);
     void    SetTimeOut (int timeout);
 
 private:
@@ -26,16 +29,18 @@ private:
 class AsyncCliApi
 {
 public:
-    AsyncCliApi();
-    virtual ~AsyncCliApi();
+    AsyncCliApi ();
+    virtual ~AsyncCliApi ();
 
-    int     Init(std::string& broker);
-    int     Send(const std::string& service, std::string& message);
-    int     Recv(std::string& service, std::string& message);
-    void    SetTimeOut(int timeout);
+    int     Init (std::string& broker);
+    int     SetSockOpt (int option, const void *optval, size_t optvallen);
+    int     GetSockOpt (int option, void *optval, size_t *optvallen);
+    int     Send (const std::string& service, std::string& route_data, std::string& message);
+    int     Recv (std::string& service, std::string& message);
+    void    SetTimeOut (int timeout);
 
 private:
-    int Connect();
+    int Connect ();
 
 private:
     void*       m_zmq_ctx;

@@ -8,6 +8,7 @@
 
 namspace mdp {
 
+//use this get error detail
 inline const char* err_msg() {
     return zmq_strerror(zmq_errno());
 }
