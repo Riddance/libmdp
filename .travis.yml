@@ -1,1 +1,15 @@
 language: cpp
+
+os: linux
+
+sudo: required
+
+addons:
+  apt:
+    package:
+    - cmake
+
+script: ./ci_build.sh
+
+notifications:
+  email: false
