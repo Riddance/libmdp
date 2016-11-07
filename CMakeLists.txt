@@ -8,4 +8,4 @@ include_directories(
 aux_source_directory(./src SRC_LIST)
 
 add_library(libmdp SHARED ${SRC_LIST})
-target_link_libraries(zmqpp ./libzmq/lib)
+target_link_libraries(libmdp ./libzmq/lib)

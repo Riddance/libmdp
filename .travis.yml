@@ -11,6 +11,10 @@ addons:
     package:
     - cmake
 
+cache:
+  directories:
+    - libzmq
+
 before_script: chmod +x ./ci_build.sh
 script: ./ci_build.sh
 
