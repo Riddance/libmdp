@@ -10,9 +10,6 @@ git clone https://github.com/zeromq/libzmq
     cd cmake-build
     cmake ..
     make -j 4
-    make test
-    make install
-    sudo ldconfig
 )
 
 mkdir build
