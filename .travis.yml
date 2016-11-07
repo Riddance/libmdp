@@ -11,8 +11,7 @@ addons:
     package:
     - cmake
 
-script:
-  - sudo ./ci_build.sh
+script: ./ci_build.sh
 
 notifications:
   email:
