@@ -15,5 +15,5 @@ ENDIF (LIBZMQ_FOUND)
 include_directories("${SOURCE_DIR}/include")
 aux_source_directory("${SOURCE_DIR}/src" SRC_LIST)
 add_library(libmdp SHARED ${SRC_LIST})
-target_link_libraries(libmdp $(ZEROMQ_LIBRARIES))
+target_link_libraries(libmdp $(LIBZMQ_LIBRARIES))
 
