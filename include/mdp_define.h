@@ -2,6 +2,9 @@
 #define MDP_DEFINE_H
 
 #include "zmq.h"
+#include <assert.h>
+#include <stdio.h>
+#include <string>
 // #include "mdp_msg.h"
 
 //Majordomo protocol
