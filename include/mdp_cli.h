@@ -25,8 +25,8 @@ private:
     int     Connect();
 
 private:
-    void*       m_zmq_ctx;
-    void*       m_zmq_socket;
+    void*       m_ctx;
+    void*       m_socket;
     std::string m_broker;
     int         m_timeout;
 };
@@ -51,8 +51,8 @@ private:
     int     Connect();
 
 private:
-    void*       m_zmq_ctx;
-    void*       m_zmq_socket;
+    void*       m_ctx;
+    void*       m_socket;
     std::string m_broker;
     int         m_timeout;
 };
