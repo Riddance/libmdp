@@ -4,7 +4,7 @@
 #include "zmq.h"
 #include <assert.h>
 #include <stdio.h>
-#include <string>
+#include <string.h>
 // #include "mdp_msg.h"
 
 //Majordomo protocol
