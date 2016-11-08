@@ -5,7 +5,7 @@
 #include <string>
 #include "mdp_msg.h"
 
-namspace mdp{
+namespace mdp{
 
 class WrkApi
 {
