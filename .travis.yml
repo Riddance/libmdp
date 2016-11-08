@@ -17,3 +17,4 @@ script: ./ci_build.sh
 notifications:
   email:
     - rangercyh@qq.com
+    - yixiongx@gmail.com

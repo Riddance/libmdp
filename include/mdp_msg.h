@@ -16,41 +16,50 @@ public:
         Clear();
     }
 
-    void PushFront (const std::string& data)
+    void PushFront(const std::string& data)
     {
         int rc = 0;
         m_parts.insert(m_parts.begin(), zmq_msg_t());
         zmq_msg_t& part = m_parts.front();
 
-        if (data.empty())
-            rc = zmq_msg_init(&part);
+        if (data.size() != 0)
+        {
+            rc = zmq_msg_init_size(&part, data.size());
+            MDP_ASSERT(rc == 0);
+            memcpy(zmq_msg_data(&part), data.c_str(), data.size());
+        }
         else
-            rc = zmq_msg_init_data(&part, data.c_str(),
-                                   data.size(), 0, 0);
-        ZMQ_ASSERT(rc == 0);
+        {
+            rc = zmq_msg_init(&part);
+            MDP_ASSERT(rc == 0);
+        }
 
         return;
     }
 
-    void PushBack (const std::string& data)
+    void PushBack(const std::string& data)
     {
         int rc = 0;
         m_parts.push_back(zmq_msg_t());
         zmq_msg_t& part = m_parts.back();
-        if (data.empty())
+
+        if (data.size() != 0) {
+            rc = zmq_msg_init_size(&part, data.size());
+            MDP_ASSERT(rc == 0);
+            memcpy(zmq_msg_data(&part), data.c_str(), data.size());
+        }
+        else {
             rc = zmq_msg_init(&part);
-        else
-            rc = zmq_msg_init_data(&part, data.c_str(),
-                                   data.size(), 0, 0);
-        ZMQ_ASSERT(rc == 0);
+            MDP_ASSERT(rc == 0); 
+        }
 
         return;
     }
 
-    std::string PopFront ()
+    std::string PopFront()
     {
         if (m_parts.empty())
-            return 0;
+            return "";
 
         zmq_msg_t& part = m_parts.front();
         std::string data((char*)zmq_msg_data(&part));
@@ -60,49 +69,49 @@ public:
         return data;
     }
 
-    int Send (void* socket)
+    int Send(void* socket)
     {
-        ZMQ_ASSERT (socket);
-        ZMQ_ASSERT (!m_parts.empty());
+        MDP_ASSERT(socket);
+        MDP_ASSERT(!m_parts.empty());
 
         int rc = 0;
         int i  = 0;
         int part_size = (int)m_parts.size();
         for (; i < part_size; ++i)
         {
-            rc = zmq_msg_send (&m_parts[i], socket, (i < part_size - 1) ? ZMQ_SNDMORE : 0);
+            rc = zmq_msg_send(&m_parts[i], socket, (i < part_size - 1) ? ZMQ_SNDMORE : 0);
             if (rc < 0)
                 break;
 
-            zmq_msg_close (&m_parts[i]);
+            zmq_msg_close(&m_parts[i]);
         }
         m_parts.erase(m_parts.begin(), m_parts.begin() + i);
 
         return rc;
     }
 
-    int Recv (void* socket)
+    int Recv(void* socket)
     {
         int rc = 0;
-        ZMQ_ASSERT (m_parts.empty ());
-        ZMQ_ASSERT (socket);
+        MDP_ASSERT(m_parts.empty());
+        MDP_ASSERT(socket);
 
         int more = 1;
-        while (more)
+        while(more != 0)
         {
-            m_parts.push_back (zmq_msg_t());
+            m_parts.push_back(zmq_msg_t());
             zmq_msg_t& part = m_parts.back();
-            rc = zmq_msg_init (&part);
-            ZMQ_ASSERT (rc == 0);
-            rc = zmq_msg_recv (&part, socket, 0);
+            rc = zmq_msg_init(&part);
+            MDP_ASSERT(rc == 0);
+            rc = zmq_msg_recv(&part, socket, 0);
             if (rc == -1)
             {
-                zmq_msg_close (&part);
-                m_parts.erase (m_parts.begin() + m_parts.size() - 1);
+                zmq_msg_close(&part);
+                m_parts.erase(m_parts.begin() + m_parts.size() - 1);
                 return rc;
             }
 
-            more = zmq_msg_more (&part);
+            more = zmq_msg_more(&part);
         }
 
         return 0;

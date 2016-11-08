@@ -1,7 +1,7 @@
 #include "mdp_cli.h"
 #include "mdp_define.h"
 
-namespace mdp {
+namespace mdp{
 
 SyncCliApi::SyncCliApi ()
 {

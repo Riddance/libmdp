@@ -4,7 +4,7 @@
 #include "mdp_define.h"
 #include <string>
 
-namspace mdp {
+namspace mdp{
 
 class WrkApi
 {
