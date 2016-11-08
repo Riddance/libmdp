@@ -22,6 +22,7 @@ public:
     void    SetTimeOut(int timeout);
 
 private:
+    void    Close();
     int     Connect();
 
 private:
@@ -48,6 +49,7 @@ public:
     void    SetTimeOut(int timeout);
 
 private:
+    void    Close();
     int     Connect();
 
 private:

@@ -99,8 +99,9 @@ int SyncCliApi::Connect ()
     return zmq_connect(m_socket, m_broker.c_str());
 }
 
-void SyncCliApi::Close ()
+void SyncCliApi::Close()
 {
+    int rc = 0;
     if (m_socket != 0)
     {
         rc = zmq_close(m_socket);
@@ -180,7 +181,7 @@ int AsyncCliApi::Recv(std::string& service, std::string& message)
 {
     MDP_ASSERT(service.empty());
     MDP_ASSERT();
-    zmq_pollitem_t items [] = {m_socket, 0, ZMQ_POLLIN, 0};
+    zmq_pollitem_t items[] = {m_socket, 0, ZMQ_POLLIN, 0};
     int rc = zmq_poll(items, 1, m_timeout);
     if (rc == -1)
         return rc;
