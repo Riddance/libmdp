@@ -43,6 +43,7 @@ int BrkApi::Bind()
 
 void BrkApi::Close()
 {
+    int rc = 0;
     if (m_socket != 0)
     {
         rc = zmq_close(m_socket);
@@ -111,9 +112,9 @@ void BrkApi::ProcessClientMessage(mdp::MdpMsg& mdp_message, std::string& sender)
     if (service_info != NULL)
     {
         std::string route_data  = mdp_message.PopFront();
-        WorkerInfo* worker_info = m_route_handler(route_data, service_info);
+        WorkerInfo* worker_info = (*m_route_handler)(route_data, service_info);
         mdp_message.PushFront("");
-        mdp_message.PushFront(worker_info.m_identity);
+        mdp_message.PushFront(worker_info->m_identity);
         mdp_message.Send(m_socket);
     }
 
@@ -139,7 +140,7 @@ void BrkApi::ProcessWorkerMessage(mdp::MdpMsg& mdp_message, std::string& sender)
         std::string empty  = mdp_message.PopFront();
 
         mdp::MdpMsg send_msg;
-        send_msg.PushFront(worker->m_service->m_name);
+        send_msg.PushFront(worker->m_service_info->m_name);
         send_msg.PushFront(MDPC_CLIENT);
         send_msg.PushFront("");
         send_msg.PushFront(client);
@@ -163,7 +164,7 @@ void BrkApi::WorkersPurge()
     std::vector<WorkerInfo*> delete_workers;
 
     std::map<std::string, WorkerInfo*>::iterator it;
-    for(it = m_workers_map.begin(); it != m_workers_map.end(); ++i)
+    for(it = m_workers_map.begin(); it != m_workers_map.end(); ++it)
     {
         WorkerInfo* worker_info = it->second;
         if (time_now > worker_info->m_expire_at)
@@ -185,13 +186,13 @@ WorkerInfo* BrkApi::DefaultRoute(std::string& route_data, ServiceInfo* service_i
     route_data.empty();
 
     WorkerInfo* worker_info = NULL;
-    if (service_info.m_worker_vec.size() >= 1)
+    if (service_info->m_worker_vec.size() >= 1)
     {
-        worker_info = service_info.m_worker_vec[0];
-        if (service_info.m_worker_vec.size() > 1)
+        worker_info = service_info->m_worker_vec[0];
+        if (service_info->m_worker_vec.size() > 1)
         {
-            service_info.m_worker_vec.erase(m_worker_vec.begin());
-            service_info.m_worker_vec.push_back(worker_info);
+            service_info->m_worker_vec.erase(m_worker_vec.begin());
+            service_info->m_worker_vec.push_back(worker_info);
         }
     }
 
@@ -220,9 +221,9 @@ ServiceInfo* BrkApi::ServiceRequire(const std::string& service_name, WorkerInfo*
         m_services_map[service_name] = service;
     }
 
-    std::vector<WorkerInfo *>::iterator it = std::find(service.m_worker_vec.begin (), service.m_worker_vec.end ());
-    if (it == service.m_worker_vec.end())
-        service.m_worker_vec.push_back(worker);
+    std::vector<WorkerInfo *>::iterator it = std::find(service->m_worker_vec.begin (), service->m_worker_vec.end ());
+    if (it == service->m_worker_vec.end())
+        service->m_worker_vec.push_back(worker);
 
     return service;
 }
