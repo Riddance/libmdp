@@ -189,6 +189,7 @@ WorkerInfo* BrkApi::DefaultRoute(std::string& route_data, ServiceInfo* service_i
     if (service_info->m_worker_vec.size() >= 1)
     {
         worker_info = service_info->m_worker_vec[0];
+
         if (service_info->m_worker_vec.size() > 1)
         {
             service_info->m_worker_vec.erase(m_worker_vec.begin());
@@ -204,7 +205,7 @@ WorkerInfo* BrkApi::WokerRequire(const std::string& sender)
     WorkerInfo* worker = m_workers_map[sender];
     if (worker == NULL)
     {
-        worker = new WorkerInfo(sender, 0, mdp_time() + HEARTBEAT_EXPIRY);
+        worker = new WorkerInfo(sender, NULL, (int)(mdp_time() + HEARTBEAT_EXPIRY));
         MDP_ASSERT (worker != NULL);
         m_workers_map[sender] = worker;
     }
@@ -231,11 +232,11 @@ ServiceInfo* BrkApi::ServiceRequire(const std::string& service_name, WorkerInfo*
 void BrkApi::DeleteWorker(WorkerInfo* worker)
 {
     MDP_ASSERT (worker != NULL);
-    ServiceInfo* service = worker->m_service;
+    ServiceInfo* service = worker->m_service_info;
 
     MDP_ASSERT (service != NULL);
     std::vector<WorkerInfo *>::iterator it =
-    std::find(service->m_worker_vec.begin(), service->m_worker_vec.end());
+    std::find(service->m_worker_vec.begin(), service->m_worker_vec.end(), worker);
 
     service->m_worker_vec.erase(it);
     m_workers_map.erase(worker->m_identity);

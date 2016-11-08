@@ -12,7 +12,7 @@ struct ServiceInfo;
 
 struct WorkerInfo
 {
-    WorkerInfo (std::string& identity, ServiceInfo * service_info = 0, int expiry = 0)
+    WorkerInfo (const std::string& identity, ServiceInfo * service_info = 0, int expiry = 0)
     {
        m_identity       = identity;
        m_service_info   = service_info;
@@ -26,7 +26,7 @@ struct WorkerInfo
 
 struct ServiceInfo
 {
-    ServiceInfo (std::string& name)
+    ServiceInfo (const std::string& name)
     {
        m_name       = name;
     }
