@@ -45,7 +45,7 @@ static char *mdpw_commands [] = {
 
 namespace mdp {
 
-int64_t
+static int64_t
 mdp_time (void)
 {
 #if defined (__UNIX__)
