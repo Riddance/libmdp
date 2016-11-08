@@ -192,7 +192,7 @@ WorkerInfo* BrkApi::DefaultRoute(std::string& route_data, ServiceInfo* service_i
 
         if (service_info->m_worker_vec.size() > 1)
         {
-            service_info->m_worker_vec.erase(m_worker_vec.begin());
+            service_info->m_worker_vec.erase(service_info->m_worker_vec.begin());
             service_info->m_worker_vec.push_back(worker_info);
         }
     }
@@ -222,7 +222,7 @@ ServiceInfo* BrkApi::ServiceRequire(const std::string& service_name, WorkerInfo*
         m_services_map[service_name] = service;
     }
 
-    std::vector<WorkerInfo *>::iterator it = std::find(service->m_worker_vec.begin (), service->m_worker_vec.end ());
+    std::vector<WorkerInfo *>::iterator it = std::find(service->m_worker_vec.begin(), service->m_worker_vec.end(), worker);
     if (it == service->m_worker_vec.end())
         service->m_worker_vec.push_back(worker);
 
