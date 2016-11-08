@@ -1,6 +1,8 @@
 PROJECT(libmdp)
 cmake_minimum_required(VERSION 2.8)
 
+list(APPEND CMAKE_MODULE_PATH ./)
+
 find_package(libzmq REQUIRED)
 IF (LIBZMQ_FOUND)
     include_directories(${LIBZMQ_INCLUDE_DIRS})
