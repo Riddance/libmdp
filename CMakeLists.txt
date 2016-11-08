@@ -5,7 +5,11 @@ include_directories(
     ./include
     ./libzmq/include
 )
+link_directories(
+    ./libzmq/lib
+)
 aux_source_directory(./src SRC_LIST)
 
 add_library(libmdp SHARED ${SRC_LIST})
-target_link_libraries(libmdp ./libzmq/lib)
+target_link_libraries(libmdp libzmq.so)
+
