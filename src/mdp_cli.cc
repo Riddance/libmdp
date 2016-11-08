@@ -180,7 +180,8 @@ int AsyncCliApi::Send(const std::string& service, const std::string& route_data,
 int AsyncCliApi::Recv(std::string& service, std::string& message)
 {
     MDP_ASSERT(service.empty());
-    MDP_ASSERT();
+    MDP_ASSERT(message.empty());
+    
     zmq_pollitem_t items[] = {m_socket, 0, ZMQ_POLLIN, 0};
     int rc = zmq_poll(items, 1, m_timeout);
     if (rc == -1)
