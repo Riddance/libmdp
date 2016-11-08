@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include "mdp_msg.h"
 
 namespace mdp {
 

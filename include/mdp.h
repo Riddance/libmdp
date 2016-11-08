@@ -1,7 +1,7 @@
 #ifndef _MDP_H_
 #define _MDP_H_
 
-#include "zmq.h"
+//#include "zmq.h"
 #include "mdp_cli.h"
 #include "mdp_brk.h"
 #include "mdp_wrk.h"

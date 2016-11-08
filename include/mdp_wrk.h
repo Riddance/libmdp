@@ -1,8 +1,9 @@
 #ifndef _MDP_WRK_H_
 #define _MDP_WRK_H_
 
-#include "mdp_define.h"
+//#include "mdp_define.h"
 #include <string>
+#include "mdp_msg.h"
 
 namspace mdp{
 

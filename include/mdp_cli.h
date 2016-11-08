@@ -2,6 +2,7 @@
 #define _MDP_CLI_H_
 
 #include <string>
+#include "mdp_msg.h"
 
 namspace mdp {
 

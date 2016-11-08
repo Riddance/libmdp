@@ -2,7 +2,7 @@
 #define MDP_DEFINE_H
 
 #include "zmq.h"
-#include "mdp_msg.h"
+// #include "mdp_msg.h"
 
 //Majordomo protocol
 #ifndef NDEBUG
