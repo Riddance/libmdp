@@ -8,6 +8,8 @@
 
 namespace mdp {
 
+struct ServiceInfo;
+
 struct WorkerInfo
 {
     WorkerInfo (std::string& identity, ServiceInfo * service_info = 0, int expiry = 0)
@@ -38,8 +40,8 @@ typedef WorkerInfo* (*RouteHandler)(std::string& route_data, ServiceInfo* servic
 class BrkApi
 {
 public:
-    BrkApi (){}
-    virtual ~BrkApi (){}
+    BrkApi ();
+    virtual ~BrkApi ();
 
     int  Init(const std::string& endpoint);
     void Start();
@@ -48,7 +50,7 @@ public:
 
 private:
     int     Bind();
-    int     Close();
+    void    Close();
     void    ProcessClientMessage(mdp::MdpMsg& mdp_message, std::string& sender);
     void    ProcessWorkerMessage(mdp::MdpMsg& mdp_message, std::string& sender);
     void    WorkersPurge();

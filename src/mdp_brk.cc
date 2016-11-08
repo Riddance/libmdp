@@ -1,5 +1,6 @@
 #include "mdp_define.h"
 #include "mdp_brk.h"
+#include <algorithm>
 
 namespace mdp {
 
@@ -30,10 +31,10 @@ int BrkApi::Bind()
 {
     MDP_ASSERT(m_socket == NULL);
     m_socket = zmq_socket(m_ctx, ZMQ_ROUTER);
-    if (socket_ == NULL)
+    if (m_socket == NULL)
         return -1;
 
-    int rc = zmq_bind(m_socket, m_endpoint);
+    int rc = zmq_bind(m_socket, m_endpoint.c_str());
     if (rc != 0)
         return rc;
 
@@ -61,12 +62,13 @@ void BrkApi::Close()
 
 void BrkApi::Start()
 {
+    int rc = 0;
     while (!m_quit)
     {
         int now = mdp::mdp_time();
         zmq_pollitem_t items [] = {m_socket, 0, ZMQ_POLLIN, 0};
-        int time_out = heartbeat_at - now;
-        rc = zmq_poll(items, 1, ZMQ_POLL_MSEC);
+        //int time_out = heartbeat_at - now;
+        rc = zmq_poll(items, 1, 0);
         MDP_ASSERT(rc == 0);
 
         if (items[0].revents & ZMQ_POLLIN)
@@ -74,7 +76,7 @@ void BrkApi::Start()
             mdp::MdpMsg mdp_message;
             rc = mdp_message.Recv(m_socket);
             if (rc != 0)
-                return rc;
+                break;
 
             std::string sender = mdp_message.PopFront();
             mdp_message.PopFront();
@@ -101,7 +103,7 @@ void BrkApi::Start()
 void BrkApi::ProcessClientMessage(mdp::MdpMsg& mdp_message, std::string& sender)
 {
     int rc = 0;
-    MDP_ASSERT (mdp_message.size () >= 2);
+    MDP_ASSERT (mdp_message.Size() >= 2);
     MDP_ASSERT (m_socket != NULL);
 
     std::string service_name    = mdp_message.PopFront();
@@ -131,7 +133,7 @@ void BrkApi::ProcessWorkerMessage(mdp::MdpMsg& mdp_message, std::string& sender)
         ServiceInfo*   service   = ServiceRequire(service_name, worker);
         MDP_ASSERT (service != NULL);
     }
-    else if (cmd == std::string(MDPW_REPLY))
+    else if (cmd == std::string(MDPW_REPORT))
     {
         std::string client = mdp_message.PopFront();
         std::string empty  = mdp_message.PopFront();
@@ -164,7 +166,7 @@ void BrkApi::WorkersPurge()
     for(it = m_workers_map.begin(); it != m_workers_map.end(); ++i)
     {
         WorkerInfo* worker_info = it->second;
-        if (time_now > worker_info.m_expire_at)
+        if (time_now > worker_info->m_expire_at)
         {
             delete_workers.push_back(worker_info);
         }
@@ -218,9 +220,9 @@ ServiceInfo* BrkApi::ServiceRequire(const std::string& service_name, WorkerInfo*
         m_services_map[service_name] = service;
     }
 
-    std::vector<WorkerInfo *>::iterator it = std::find(service.m_workers.begin (), service.m_workers.end ());
-    if (it == service.m_workers.end())
-        service.m_workers.push_back(worker);
+    std::vector<WorkerInfo *>::iterator it = std::find(service.m_worker_vec.begin (), service.m_worker_vec.end ());
+    if (it == service.m_worker_vec.end())
+        service.m_worker_vec.push_back(worker);
 
     return service;
 }
@@ -232,9 +234,9 @@ void BrkApi::DeleteWorker(WorkerInfo* worker)
 
     MDP_ASSERT (service != NULL);
     std::vector<WorkerInfo *>::iterator it =
-    std::find(service->m_workers.begin(), service->m_workers.end());
+    std::find(service->m_worker_vec.begin(), service->m_worker_vec.end());
 
-    service->m_workers.erase(it);
+    service->m_worker_vec.erase(it);
     m_workers_map.erase(worker->m_identity);
     delete worker;
     worker = NULL;
