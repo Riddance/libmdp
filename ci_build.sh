@@ -10,7 +10,9 @@ if [ ! -d "libzmq" ]; then
         mkdir cmake-build
         cd cmake-build
         cmake ..
-        make -j 4
+        sudo make install
+        sudo ldconfig
+        cd ..
     )
 fi
 
