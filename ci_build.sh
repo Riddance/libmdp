@@ -3,18 +3,16 @@
 set -x
 set -e
 
-if [ ! -d "libzmq" ]; then
-    git clone https://github.com/zeromq/libzmq
-    (
-        cd libzmq
-        mkdir cmake-build
-        cd cmake-build
-        cmake ..
-        sudo make install
-        sudo ldconfig
-        cd ..
-    )
-fi
+git submodule update --init --recursive
+(
+    cd libzmq
+    mkdir cmake-build
+    cd cmake-build
+    cmake ..
+    sudo make install
+    sudo ldconfig
+    cd ..
+)
 
 mkdir build
 cd build
